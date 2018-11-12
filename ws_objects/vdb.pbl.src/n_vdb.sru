@@ -22,11 +22,14 @@ char		ic_Scope
 
 
 end variables
+
 forward prototypes
 public function integer of_setstyle (integer ai_style)
 public function integer of_setscope (integer ai_scope)
 protected function integer of_getdatatypeprefix (string as_datatype, ref string as_datatypeprefix)
 protected function integer of_getobjectprefixe (string as_object, ref string as_objectprefix)
+public function string of_parse (string as_line)
+public function string of_cleanuselessblank (string as_line)
 end prototypes
 
 public function integer of_setstyle (integer ai_style);if isnull( ai_style ) then return -1
@@ -446,6 +449,57 @@ choose case lower( trim( as_object ) )
 end choose
 
 return 1
+end function
+
+public function string of_parse (string as_line);string ls_line
+
+ls_line = trim( as_line )
+
+
+
+return ls_line
+
+
+end function
+
+public function string of_cleanuselessblank (string as_line);string ls_line
+string ls_left
+string ls_right
+long 	ll_pos
+
+// remove surrounding spaces
+ls_line = trim( as_line )
+
+// remove surrounding tabs
+do while left( ls_line, 1 ) = "~t"
+	ls_line = mid( ls_line, 2 )
+loop
+
+do while right( ls_line, 1 ) = "~t" 
+	ls_line = left( ls_line, len( ls_line) - 1 )
+loop
+
+// remove double space
+ll_pos = pos( ls_line, "  ")
+do while ll_pos > 0
+	ls_left = left( ls_line, ll_pos )
+	ls_right = mid( ls_line, ll_pos + 2)
+	ls_line =  ls_left + ls_right
+	ll_pos = pos( ls_line, "  ")
+loop
+
+// remove double tabs
+ll_pos = pos( ls_line, "~t~t")
+do while ll_pos > 0
+	ls_left = left( ls_line, ll_pos )
+	ls_right = mid( ls_line, ll_pos + 2)
+	ls_line =  ls_left + ls_right
+	ll_pos = pos( ls_line, "~t~t")
+loop
+
+return ls_line
+
+
 end function
 
 on n_vdb.create

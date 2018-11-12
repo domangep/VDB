@@ -2,9 +2,11 @@
 forward
 global type w_vdb_test from window
 end type
-type sle_classname from singlelineedit within w_vdb_test
+type sle_dst from singlelineedit within w_vdb_test
 end type
-type cb_fw_classname from commandbutton within w_vdb_test
+type sle_src from singlelineedit within w_vdb_test
+end type
+type cb_cleanuselessblanck from commandbutton within w_vdb_test
 end type
 end forward
 
@@ -17,31 +19,53 @@ boolean controlmenu = true
 long backcolor = 67108864
 string icon = "AppIcon!"
 boolean center = true
-sle_classname sle_classname
-cb_fw_classname cb_fw_classname
+sle_dst sle_dst
+sle_src sle_src
+cb_cleanuselessblanck cb_cleanuselessblanck
 end type
 global w_vdb_test w_vdb_test
 
 type variables
-n_windows_api inv_api
+n_vdb inv_vdb
+
 end variables
 
 on w_vdb_test.create
-this.sle_classname=create sle_classname
-this.cb_fw_classname=create cb_fw_classname
-this.Control[]={this.sle_classname,&
-this.cb_fw_classname}
+this.sle_dst=create sle_dst
+this.sle_src=create sle_src
+this.cb_cleanuselessblanck=create cb_cleanuselessblanck
+this.Control[]={this.sle_dst,&
+this.sle_src,&
+this.cb_cleanuselessblanck}
 end on
 
 on w_vdb_test.destroy
-destroy(this.sle_classname)
-destroy(this.cb_fw_classname)
+destroy(this.sle_dst)
+destroy(this.sle_src)
+destroy(this.cb_cleanuselessblanck)
 end on
 
-type sle_classname from singlelineedit within w_vdb_test
-integer x = 841
+type sle_dst from singlelineedit within w_vdb_test
+integer x = 27
+integer y = 168
+integer width = 1554
+integer height = 112
+integer taborder = 30
+integer textsize = -10
+integer weight = 400
+fontcharset fontcharset = ansi!
+fontpitch fontpitch = variable!
+fontfamily fontfamily = swiss!
+string facename = "Tahoma"
+long textcolor = 33554432
+long backcolor = 31259099
+borderstyle borderstyle = stylelowered!
+end type
+
+type sle_src from singlelineedit within w_vdb_test
+integer x = 27
 integer y = 36
-integer width = 741
+integer width = 1554
 integer height = 112
 integer taborder = 20
 integer textsize = -10
@@ -51,12 +75,12 @@ fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
 string facename = "Tahoma"
 long textcolor = 33554432
+long backcolor = 30599679
 borderstyle borderstyle = stylelowered!
 end type
 
-type cb_fw_classname from commandbutton within w_vdb_test
-integer x = 27
-integer y = 36
+type cb_cleanuselessblanck from commandbutton within w_vdb_test
+integer y = 1684
 integer width = 777
 integer height = 112
 integer taborder = 10
@@ -66,16 +90,16 @@ fontcharset fontcharset = ansi!
 fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
 string facename = "Tahoma"
-string text = "FindWindow by Classname"
+string text = "Clean Useless Blank"
 end type
 
-event clicked;ulong	ul_handler
-string	ls_classname
+event clicked;string ls_dst
+string ls_src
 
-ls_classname 	= sle_classname.text
-ul_handler 		= inv_api.of_findwindow( ls_classname )
+ls_src = sle_src.text
+ls_dst = inv_vdb.of_cleanuselessblank( ls_src )
 
-messagebox("FindWIndow by classname"," Classname = " + ls_classname + "~nHandler = " + string( ul_handler ), information!)
+sle_dst.text = ls_dst
 
 end event
 
