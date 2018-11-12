@@ -467,17 +467,8 @@ string ls_left
 string ls_right
 long 	ll_pos
 
-// remove surrounding spaces
-ls_line = trim( as_line )
-
-// remove surrounding tabs
-do while left( ls_line, 1 ) = "~t"
-	ls_line = mid( ls_line, 2 )
-loop
-
-do while right( ls_line, 1 ) = "~t" 
-	ls_line = left( ls_line, len( ls_line) - 1 )
-loop
+// remove surrounding blank
+ls_line = trim( as_line, true )
 
 // remove double space
 ll_pos = pos( ls_line, "  ")
