@@ -30,6 +30,8 @@ protected function integer of_getdatatypeprefix (string as_datatype, ref string 
 protected function integer of_getobjectprefixe (string as_object, ref string as_objectprefix)
 public function string of_parse (string as_line)
 public function string of_cleanuselessblank (string as_line)
+public function integer of_findscope (string as_line, ref long al_pos, ref string as_scope, ref boolean ab_group)
+public function integer of_findreadaccess (string as_line, ref long al_pos, ref string as_raccess)
 end prototypes
 
 public function integer of_setstyle (integer ai_style);if isnull( ai_style ) then return -1
@@ -453,7 +455,8 @@ end function
 
 public function string of_parse (string as_line);string ls_line
 
-ls_line = trim( as_line )
+ls_line = lower( of_cleanuselessblank( as_line ) )
+
 
 
 
@@ -491,6 +494,147 @@ loop
 return ls_line
 
 
+end function
+
+public function integer of_findscope (string as_line, ref long al_pos, ref string as_scope, ref boolean ab_group);long ll_pos
+
+if isnull( as_line ) or as_line = "" then return -1
+
+// find grouped version of scope
+ll_pos = pos( as_line, "public:" )
+if  ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+			as_scope = 'Public:'
+		case #cst.#standard_uppercase
+			as_scope = 'PUBLIC:'
+	end choose
+	al_pos = ll_pos
+	ab_group = true
+	return 1
+end if
+
+ll_pos = pos( as_line, "protected:" )
+if  ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+			as_scope = 'Protected:'
+		case #cst.#standard_uppercase
+			as_scope = 'PROTECTED:'
+	end choose
+	al_pos = ll_pos
+	ab_group = true
+	return 1
+end if
+
+ll_pos = pos( as_line, "private:" )
+if  ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+			as_scope = 'Private:'
+		case #cst.#standard_uppercase
+			as_scope = 'PRIVATE:'
+	end choose
+	al_pos = ll_pos
+	ab_group = true
+	return 1
+end if
+
+// find inline version of scope
+ll_pos = pos( as_line, "public" )
+if  ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+			as_scope = 'Public'
+		case #cst.#standard_uppercase
+			as_scope = 'PUBLIC'
+	end choose
+	al_pos = ll_pos
+	ab_group = false
+	return 1
+end if
+
+ll_pos = pos( as_line, "protected" )
+if  ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+			as_scope = 'Protected'
+		case #cst.#standard_uppercase
+			as_scope = 'PROTECTED'
+	end choose
+	al_pos = ll_pos
+	ab_group = false
+	return 1
+end if
+
+ll_pos = pos( as_line, "private" )
+if  ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+			as_scope = 'Private'
+		case #cst.#standard_uppercase
+			as_scope = 'PRIVATE'
+	end choose
+	al_pos = ll_pos
+	ab_group = false
+	return 1
+end if
+
+// not scope found
+al_pos = 0
+as_scope = ""
+ab_group = false
+
+return 1
+end function
+
+public function integer of_findreadaccess (string as_line, ref long al_pos, ref string as_raccess);long ll_pos
+
+if isnull( as_line ) or as_line = "" then return -1
+
+
+// find inline version of scope
+ll_pos = pos( as_line, "public" )
+if  ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+			as_raccess = 'Public'
+		case #cst.#standard_uppercase
+			as_raccess = 'PUBLIC'
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "protectedread" )
+if  ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+			as_raccess = 'ProtectedRead'
+		case #cst.#standard_uppercase
+			as_raccess = 'PROTECTEDREAD'
+	end choose
+	al_pos = ll_pos	
+	return 1
+end if
+
+ll_pos = pos( as_line, "private" )
+if  ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+			as_raccess = 'PrivateRead'
+		case #cst.#standard_uppercase
+			as_raccess = 'PRIVATEREAD'
+	end choose
+	al_pos = ll_pos	
+	return 1
+end if
+
+// not scope found
+as_raccess = ""
+al_pos = 0
+
+return 1
 end function
 
 on n_vdb.create
