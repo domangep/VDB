@@ -32,6 +32,7 @@ public function string of_parse (string as_line)
 public function string of_cleanuselessblank (string as_line)
 public function integer of_findscope (string as_line, ref long al_pos, ref string as_scope, ref boolean ab_group)
 public function integer of_findreadaccess (string as_line, ref long al_pos, ref string as_raccess)
+public function integer of_findwriteaccess (string as_line, ref long al_pos, ref string as_waccess)
 end prototypes
 
 public function integer of_setstyle (integer ai_style);if isnull( ai_style ) then return -1
@@ -593,18 +594,7 @@ public function integer of_findreadaccess (string as_line, ref long al_pos, ref 
 if isnull( as_line ) or as_line = "" then return -1
 
 
-// find inline version of scope
-ll_pos = pos( as_line, "public" )
-if  ll_pos > 0 then
-	choose case ii_style
-		case #cst.#standard_lowercase
-			as_raccess = 'Public'
-		case #cst.#standard_uppercase
-			as_raccess = 'PUBLIC'
-	end choose
-	al_pos = ll_pos
-	return 1
-end if
+// find inline read access
 
 ll_pos = pos( as_line, "protectedread" )
 if  ll_pos > 0 then
@@ -630,8 +620,45 @@ if  ll_pos > 0 then
 	return 1
 end if
 
-// not scope found
+// not read access found
 as_raccess = ""
+al_pos = 0
+
+return 1
+end function
+
+public function integer of_findwriteaccess (string as_line, ref long al_pos, ref string as_waccess);long ll_pos
+
+if isnull( as_line ) or as_line = "" then return -1
+
+
+// find inline write access
+ll_pos = pos( as_line, "protectedwrite" )
+if  ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+			as_waccess = 'ProtectedWrite'
+		case #cst.#standard_uppercase
+			as_waccess = 'PROTECTEWRITE'
+	end choose
+	al_pos = ll_pos	
+	return 1
+end if
+
+ll_pos = pos( as_line, "privatewrite" )
+if  ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+			as_waccess = 'PrivateWrite'
+		case #cst.#standard_uppercase
+			as_waccess = 'PRIVATEWRITE'
+	end choose
+	al_pos = ll_pos	
+	return 1
+end if
+
+// not write access found
+as_waccess = ""
 al_pos = 0
 
 return 1
