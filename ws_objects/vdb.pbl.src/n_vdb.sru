@@ -33,6 +33,7 @@ public function string of_cleanuselessblank (string as_line)
 public function integer of_findscope (string as_line, ref long al_pos, ref string as_scope, ref boolean ab_group)
 public function integer of_findreadaccess (string as_line, ref long al_pos, ref string as_raccess)
 public function integer of_findwriteaccess (string as_line, ref long al_pos, ref string as_waccess)
+protected function integer of_finddatatype (string as_line, ref long al_pos, ref string as_datatype)
 end prototypes
 
 public function integer of_setstyle (integer ai_style);if isnull( ai_style ) then return -1
@@ -660,6 +661,318 @@ end if
 // not write access found
 as_waccess = ""
 al_pos = 0
+
+return 1
+end function
+
+protected function integer of_finddatatype (string as_line, ref long al_pos, ref string as_datatype);long ll_pos
+
+if isnull( as_line ) or as_line = "" then return -1
+
+ll_pos = pos( as_line, "any " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Any"
+		case #cst.#standard_uppercase
+		  as_datatype = "ANY"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "blob " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Blob"
+		case #cst.#standard_uppercase
+		  as_datatype = "BLOB"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "boolean " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Boolean"
+		case #cst.#standard_uppercase
+		  as_datatype = "BOOLEAN"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "byte " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Byte"
+		case #cst.#standard_uppercase
+		  as_datatype = "BYTE"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "char " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Char"
+		case #cst.#standard_uppercase
+		  as_datatype = "CHAR"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "character " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Character"
+		case #cst.#standard_uppercase
+		  as_datatype = "CHARACTER"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "date " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Date"
+		case #cst.#standard_uppercase
+		  as_datatype = "DATE"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "datetime " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "DateTime"
+		case #cst.#standard_uppercase
+		  as_datatype = "DATETIME"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "decimal " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Decimal"
+		case #cst.#standard_uppercase
+		  as_datatype = "DECIMAL"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "dec " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Dec"
+		case #cst.#standard_uppercase
+		  as_datatype = "DEC"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "double " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Double"
+		case #cst.#standard_uppercase
+		  as_datatype = "DOUBLE"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "enumerated " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Enumerated"
+		case #cst.#standard_uppercase
+		  as_datatype = "ENUMERATED"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "integer " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Integer"
+		case #cst.#standard_uppercase
+		  as_datatype = "INTEGER"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "int " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Int"
+		case #cst.#standard_uppercase
+		  as_datatype = "INT"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+
+ll_pos = pos( as_line, "long " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Long"
+		case #cst.#standard_uppercase
+		  as_datatype = "LONG"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "longlong " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "LongLong"
+		case #cst.#standard_uppercase
+		  as_datatype = "LONGLONG"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "longptr " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "LongPtr"
+		case #cst.#standard_uppercase
+		  as_datatype = "LONGPTR"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "real " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Real"
+		case #cst.#standard_uppercase
+		  as_datatype = "REAL"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "string " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "String"
+		case #cst.#standard_uppercase
+		  as_datatype = "STRING"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "time " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Time"
+		case #cst.#standard_uppercase
+		  as_datatype = "TIME"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "unsignedinteger " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "UnsignedInteger"
+		case #cst.#standard_uppercase
+		  as_datatype = "UNSIGNEDINTEGER"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "unsignedint " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "UnsignedInt"
+		case #cst.#standard_uppercase
+		  as_datatype = "UNSIGNEDINT"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "uint " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "UInt"
+		case #cst.#standard_uppercase
+		  as_datatype = "UINT"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "unsignedlong " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "UnsignedLong"
+		case #cst.#standard_uppercase
+		  as_datatype = "UNSIGNEDLONG"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "ulong " )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "ULong"
+		case #cst.#standard_uppercase
+		  as_datatype = "ULONG"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+// not found
+al_pos =0
+as_datatype = ""
 
 return 1
 end function
