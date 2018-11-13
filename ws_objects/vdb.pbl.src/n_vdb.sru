@@ -34,6 +34,7 @@ public function integer of_findscope (string as_line, ref long al_pos, ref strin
 public function integer of_findreadaccess (string as_line, ref long al_pos, ref string as_raccess)
 public function integer of_findwriteaccess (string as_line, ref long al_pos, ref string as_waccess)
 protected function integer of_finddatatype (string as_line, ref long al_pos, ref string as_datatype)
+public function integer of_findvariable (string as_line, string as_prefix, long al_startpos, ref string as_varname, ref long al_nextpos)
 end prototypes
 
 public function integer of_setstyle (integer ai_style);if isnull( ai_style ) then return -1
@@ -455,12 +456,39 @@ end choose
 return 1
 end function
 
-public function string of_parse (string as_line);string ls_line
+public function string of_parse (string as_line);boolean 	lb_group
+integer	li_rc
+integer	li_group
+long		ll_pos
+long		ll_nextpos
+string 	ls_line
+string 	ls_scope
+string 	ls_raccess
+string 	ls_waccess
+string 	ls_varname
+string 	ls_group
+string		ls_datatype
+string		ls_prefix
 
 ls_line = lower( of_cleanuselessblank( as_line ) )
 
+li_rc = of_findscope( ls_line, ll_pos, ls_scope, lb_group )
+if lb_group = true then
+	li_group ++
+end if
 
+li_rc = of_findreadaccess( ls_line, ll_pos, ls_raccess )
+li_rc = of_findwriteaccess( ls_line, ll_pos, ls_waccess )
+li_rc = of_finddatatype( ls_line, ll_pos, ls_datatype)
+li_rc = of_getdatatypeprefix( ls_datatype, ls_prefix)
 
+li_rc = of_findvariable( ls_line, ls_prefix, ll_pos + len(ls_datatype) , ls_varname, ll_nextpos )
+
+do while ll_nextpos > 0
+	ls_line = ls_scope + "~t" + ls_raccess + "~t" + ls_waccess + "~t" + ls_datatype + "~t" + ls_varname + "~t" + string( li_group ) + "~r~n"
+	li_rc = ids_data.importstring( ls_line )
+	li_rc = of_findvariable( ls_line, ls_prefix, ll_nextpos , ls_varname, ll_nextpos )
+loop
 
 return ls_line
 
@@ -973,6 +1001,28 @@ end if
 // not found
 al_pos =0
 as_datatype = ""
+
+return 1
+end function
+
+public function integer of_findvariable (string as_line, string as_prefix, long al_startpos, ref string as_varname, ref long al_nextpos);long	ll_pos
+string ls_tmp
+if isnull( as_line ) or as_line = "" then return -1
+if isnull( as_prefix ) or as_prefix = "" then return -1
+if al_startpos < 0 then return -1
+
+ll_pos = pos( as_line, ",", al_startpos )
+if ll_pos > 0 then
+	ls_tmp = trim( mid( as_line, al_startpos, ll_pos - 1) )
+	al_nextpos = ll_pos + 1
+	ll_pos = pos( ls_tmp, "_" )
+	if ll_pos > 0 then
+		ls_tmp = mid( ls_tmp, ll_pos + 1)
+	end if
+end if
+
+as_varname = as_prefix+"_"+ls_tmp
+
 
 return 1
 end function
