@@ -15,14 +15,13 @@ public:
 n_cst_vbd	#cst
 
 protected:
-integer	ii_Scope
-integer	ii_Style
+integer	ii_Scope = 1
+integer	ii_Style = 1
 string		ii_SourceText
 char		ic_Scope
 
 
 end variables
-
 forward prototypes
 public function integer of_setstyle (integer ai_style)
 public function integer of_setscope (integer ai_scope)
@@ -470,7 +469,9 @@ string 	ls_group
 string		ls_datatype
 string		ls_prefix
 
-ls_line = lower( of_cleanuselessblank( as_line ) )
+//ls_line = lower( of_cleanuselessblank( as_line ) )
+
+ls_line = lower ( trim( as_line) )
 
 li_rc = of_findscope( ls_line, ll_pos, ls_scope, lb_group )
 if lb_group = true then
@@ -697,7 +698,7 @@ protected function integer of_finddatatype (string as_line, ref long al_pos, ref
 
 if isnull( as_line ) or as_line = "" then return -1
 
-ll_pos = pos( as_line, "any " )
+ll_pos = pos( as_line, "any" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -709,7 +710,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "blob " )
+ll_pos = pos( as_line, "blob" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -721,7 +722,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "boolean " )
+ll_pos = pos( as_line, "boolean" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -733,7 +734,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "byte " )
+ll_pos = pos( as_line, "byte" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -745,7 +746,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "char " )
+ll_pos = pos( as_line, "char" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -757,7 +758,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "character " )
+ll_pos = pos( as_line, "character" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -769,7 +770,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "date " )
+ll_pos = pos( as_line, "date" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -781,7 +782,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "datetime " )
+ll_pos = pos( as_line, "datetime" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -793,7 +794,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "decimal " )
+ll_pos = pos( as_line, "decimal" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -805,7 +806,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "dec " )
+ll_pos = pos( as_line, "dec" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -817,7 +818,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "double " )
+ll_pos = pos( as_line, "double" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -829,7 +830,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "enumerated " )
+ll_pos = pos( as_line, "enumerated" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -841,7 +842,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "integer " )
+ll_pos = pos( as_line, "integer" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -853,7 +854,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "int " )
+ll_pos = pos( as_line, "int" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -866,7 +867,7 @@ if ll_pos > 0 then
 end if
 
 
-ll_pos = pos( as_line, "long " )
+ll_pos = pos( as_line, "long" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -878,7 +879,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "longlong " )
+ll_pos = pos( as_line, "longlong" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -890,7 +891,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "longptr " )
+ll_pos = pos( as_line, "longptr" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -902,7 +903,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "real " )
+ll_pos = pos( as_line, "real" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -914,7 +915,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "string " )
+ll_pos = pos( as_line, "string" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -926,7 +927,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "time " )
+ll_pos = pos( as_line, "time" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -938,7 +939,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "unsignedinteger " )
+ll_pos = pos( as_line, "unsignedinteger" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -950,7 +951,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "unsignedint " )
+ll_pos = pos( as_line, "unsignedint" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -962,7 +963,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "uint " )
+ll_pos = pos( as_line, "uint" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -974,7 +975,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "unsignedlong " )
+ll_pos = pos( as_line, "unsignedlong" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
@@ -986,7 +987,7 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "ulong " )
+ll_pos = pos( as_line, "ulong" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
