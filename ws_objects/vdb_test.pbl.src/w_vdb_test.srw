@@ -2,6 +2,10 @@
 forward
 global type w_vdb_test from window
 end type
+type sle_1 from singlelineedit within w_vdb_test
+end type
+type cb_2 from commandbutton within w_vdb_test
+end type
 type cb_1 from commandbutton within w_vdb_test
 end type
 type dw_1 from datawindow within w_vdb_test
@@ -19,6 +23,8 @@ boolean controlmenu = true
 long backcolor = 67108864
 string icon = "AppIcon!"
 boolean center = true
+sle_1 sle_1
+cb_2 cb_2
 cb_1 cb_1
 dw_1 dw_1
 mle_1 mle_1
@@ -31,19 +37,70 @@ n_vdb inv_vdb
 end variables
 
 on w_vdb_test.create
+this.sle_1=create sle_1
+this.cb_2=create cb_2
 this.cb_1=create cb_1
 this.dw_1=create dw_1
 this.mle_1=create mle_1
-this.Control[]={this.cb_1,&
+this.Control[]={this.sle_1,&
+this.cb_2,&
+this.cb_1,&
 this.dw_1,&
 this.mle_1}
 end on
 
 on w_vdb_test.destroy
+destroy(this.sle_1)
+destroy(this.cb_2)
 destroy(this.cb_1)
 destroy(this.dw_1)
 destroy(this.mle_1)
 end on
+
+type sle_1 from singlelineedit within w_vdb_test
+integer x = 466
+integer y = 476
+integer width = 1074
+integer height = 112
+integer taborder = 40
+integer textsize = -10
+integer weight = 400
+fontcharset fontcharset = ansi!
+fontpitch fontpitch = variable!
+fontfamily fontfamily = swiss!
+string facename = "Tahoma"
+long textcolor = 33554432
+borderstyle borderstyle = stylelowered!
+end type
+
+type cb_2 from commandbutton within w_vdb_test
+integer x = 1559
+integer y = 476
+integer width = 402
+integer height = 112
+integer taborder = 30
+integer textsize = -10
+integer weight = 400
+fontcharset fontcharset = ansi!
+fontpitch fontpitch = variable!
+fontfamily fontfamily = swiss!
+string facename = "Tahoma"
+string text = "Find"
+end type
+
+event clicked;n_windows_api	lnv
+ulong	ul_handle_frame
+ulong	ul_handle_child
+ulong	ul_handle_sheet
+
+
+ul_handle_frame = lnv.of_findwindow( "PBFRAME170" )
+ul_handle_sheet = lnv.of_findchildwindow( ul_handle_frame, sle_1.text )
+ul_handle_child = lnv.of_findchildwindow( ul_handle_sheet,  "wedit" )
+messagebox("Find Window class " + sle_1.text, "frame Handle = " + string( ul_handle_frame )+ "~Sheet Handlle = " + string( ul_handle_sheet ) + "~nChild Handlle = " + string( ul_handle_child ) , information!)
+
+
+end event
 
 type cb_1 from commandbutton within w_vdb_test
 integer x = 46
