@@ -22,6 +22,7 @@ char		ic_Scope
 
 
 end variables
+
 forward prototypes
 public function integer of_setstyle (integer ai_style)
 public function integer of_setscope (integer ai_scope)
@@ -73,45 +74,56 @@ end function
 
 protected function integer of_getdatatypeprefix (string as_datatype, ref string as_datatypeprefix);if isnull( as_datatype ) or len(trim( as_datatype )) = 0 then return -1
 
+choose case ii_scope
+	case #cst.#global_variable
+		as_datatypeprefix = "g"
+	case #cst.#instance_variable
+		as_datatypeprefix = "i"
+	case #cst.#local_variable
+		as_datatypeprefix = "l"
+	case #cst.#shared_variable
+		as_datatypeprefix = "s"
+end choose
+
 choose case lower( trim( as_datatype ) )
 	case "any"
-		as_datatypeprefix = "a"
+		as_datatypeprefix += "a"
 	case "blob"
-		as_datatypeprefix = "blb"
+		as_datatypeprefix += "blb"
 	case "boolean"
-		as_datatypeprefix = "b"
+		as_datatypeprefix += "b"
 	case "byte"
-		as_datatypeprefix = "bt"
+		as_datatypeprefix += "bt"
 	case "char", "character" 
-		as_datatypeprefix = "ch"
+		as_datatypeprefix += "ch"
 	case "date"
-		as_datatypeprefix = "d"
+		as_datatypeprefix += "d"
 	case "datetime"
-		as_datatypeprefix = "dtm"
+		as_datatypeprefix += "dtm"
 	case "dec", "decimal"
-		as_datatypeprefix = "dc"
+		as_datatypeprefix += "dc"
 	case "double"
-		as_datatypeprefix = "dbl"
+		as_datatypeprefix += "dbl"
 	case "enumerated"
-		as_datatypeprefix = "e"
+		as_datatypeprefix += "e"
 	case "int", "integer"
-		as_datatypeprefix = "i"
+		as_datatypeprefix += "i"
 	case "long"
-		as_datatypeprefix = "l"
+		as_datatypeprefix += "l"
 	case "longlong"
-		as_datatypeprefix = "ll"
+		as_datatypeprefix += "ll"
 	case "longptr"
-		as_datatypeprefix = "lptr"
+		as_datatypeprefix += "lptr"
 	case "real"
-		as_datatypeprefix = "r"
+		as_datatypeprefix += "r"
 	case "string"
-		as_datatypeprefix = "s"
+		as_datatypeprefix += "s"
 	case "time"
-		as_datatypeprefix = "tm"
+		as_datatypeprefix += "tm"
 	case "uint","unsignedint", "unsignedinteger"
-		as_datatypeprefix = "ui"
+		as_datatypeprefix += "ui"
 	case "ulong", "unsignedlong"
-		as_datatypeprefix = "ul"
+		as_datatypeprefix += "ul"
 end choose
 
 return 1
@@ -468,8 +480,8 @@ string 	ls_varname
 string 	ls_group
 string		ls_datatype
 string		ls_prefix
-
-//ls_line = lower( of_cleanuselessblank( as_line ) )
+string		ls_varscope
+string		ls_tmp
 
 ls_line = lower ( trim( as_line) )
 
@@ -486,8 +498,9 @@ li_rc = of_getdatatypeprefix( ls_datatype, ls_prefix)
 li_rc = of_findvariable( ls_line, ls_prefix, ll_pos + len(ls_datatype) , ls_varname, ll_nextpos )
 
 do while ll_nextpos > 0
-	ls_line = ls_scope + "~t" + ls_raccess + "~t" + ls_waccess + "~t" + ls_datatype + "~t" + ls_varname + "~t" + string( li_group ) + "~r~n"
-	li_rc = ids_data.importstring( ls_line )
+	ls_tmp = string( li_group ) + "~t" + ls_scope + "~t" + ls_raccess + "~t" + ls_waccess + "~t" + ls_datatype + "~t" + ls_varname   + "~r~n"
+	li_rc = ids_data.importstring( ls_tmp )
+	ls_varname = ""
 	li_rc = of_findvariable( ls_line, ls_prefix, ll_nextpos , ls_varname, ll_nextpos )
 loop
 
@@ -854,6 +867,42 @@ if ll_pos > 0 then
 	return 1
 end if
 
+ll_pos = pos( as_line, "unsignedinteger" )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "UnsignedInteger"
+		case #cst.#standard_uppercase
+		  as_datatype = "UNSIGNEDINTEGER"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "unsignedint" )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "UnsignedInt"
+		case #cst.#standard_uppercase
+		  as_datatype = "UNSIGNEDINT"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "uint" )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "UInt"
+		case #cst.#standard_uppercase
+		  as_datatype = "UINT"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
 ll_pos = pos( as_line, "int" )
 if ll_pos > 0 then
 	choose case ii_style
@@ -866,14 +915,25 @@ if ll_pos > 0 then
 	return 1
 end if
 
-
-ll_pos = pos( as_line, "long" )
+ll_pos = pos( as_line, "unsignedlong" )
 if ll_pos > 0 then
 	choose case ii_style
 		case #cst.#standard_lowercase
-		  as_datatype = "Long"
+		  as_datatype = "UnsignedLong"
 		case #cst.#standard_uppercase
-		  as_datatype = "LONG"
+		  as_datatype = "UNSIGNEDLONG"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "ulong" )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "ULong"
+		case #cst.#standard_uppercase
+		  as_datatype = "ULONG"
 	end choose
 	al_pos = ll_pos
 	return 1
@@ -898,6 +958,18 @@ if ll_pos > 0 then
 		  as_datatype = "LongPtr"
 		case #cst.#standard_uppercase
 		  as_datatype = "LONGPTR"
+	end choose
+	al_pos = ll_pos
+	return 1
+end if
+
+ll_pos = pos( as_line, "long" )
+if ll_pos > 0 then
+	choose case ii_style
+		case #cst.#standard_lowercase
+		  as_datatype = "Long"
+		case #cst.#standard_uppercase
+		  as_datatype = "LONG"
 	end choose
 	al_pos = ll_pos
 	return 1
@@ -939,66 +1011,6 @@ if ll_pos > 0 then
 	return 1
 end if
 
-ll_pos = pos( as_line, "unsignedinteger" )
-if ll_pos > 0 then
-	choose case ii_style
-		case #cst.#standard_lowercase
-		  as_datatype = "UnsignedInteger"
-		case #cst.#standard_uppercase
-		  as_datatype = "UNSIGNEDINTEGER"
-	end choose
-	al_pos = ll_pos
-	return 1
-end if
-
-ll_pos = pos( as_line, "unsignedint" )
-if ll_pos > 0 then
-	choose case ii_style
-		case #cst.#standard_lowercase
-		  as_datatype = "UnsignedInt"
-		case #cst.#standard_uppercase
-		  as_datatype = "UNSIGNEDINT"
-	end choose
-	al_pos = ll_pos
-	return 1
-end if
-
-ll_pos = pos( as_line, "uint" )
-if ll_pos > 0 then
-	choose case ii_style
-		case #cst.#standard_lowercase
-		  as_datatype = "UInt"
-		case #cst.#standard_uppercase
-		  as_datatype = "UINT"
-	end choose
-	al_pos = ll_pos
-	return 1
-end if
-
-ll_pos = pos( as_line, "unsignedlong" )
-if ll_pos > 0 then
-	choose case ii_style
-		case #cst.#standard_lowercase
-		  as_datatype = "UnsignedLong"
-		case #cst.#standard_uppercase
-		  as_datatype = "UNSIGNEDLONG"
-	end choose
-	al_pos = ll_pos
-	return 1
-end if
-
-ll_pos = pos( as_line, "ulong" )
-if ll_pos > 0 then
-	choose case ii_style
-		case #cst.#standard_lowercase
-		  as_datatype = "ULong"
-		case #cst.#standard_uppercase
-		  as_datatype = "ULONG"
-	end choose
-	al_pos = ll_pos
-	return 1
-end if
-
 // not found
 al_pos =0
 as_datatype = ""
@@ -1014,16 +1026,22 @@ if al_startpos < 0 then return -1
 
 ll_pos = pos( as_line, ",", al_startpos )
 if ll_pos > 0 then
-	ls_tmp = trim( mid( as_line, al_startpos, ll_pos - 1) )
+	ls_tmp = trim( mid( as_line, al_startpos, ll_pos - al_startpos) )
 	al_nextpos = ll_pos + 1
 	ll_pos = pos( ls_tmp, "_" )
 	if ll_pos > 0 then
 		ls_tmp = mid( ls_tmp, ll_pos + 1)
 	end if
+elseif al_startpos < len( as_line ) then
+	ls_tmp = trim(mid( as_line, al_startpos ))
+	al_nextpos = 0
 end if
 
-as_varname = as_prefix+"_"+ls_tmp
-
+if len(ls_tmp ) > 0 then
+	as_varname = as_prefix+"_"+ls_tmp	
+else
+	as_varname = ""
+end if
 
 return 1
 end function
